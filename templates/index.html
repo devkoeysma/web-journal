@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="ko">
+    <head>
+        <meta charset="UTF-8">
+        <title>글 작성</title>
+        <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    </head>
+    <body>
+        {% if page == "post" %} <!--글 쓰는 페이지-->
+        <h1>글 작성</h1>
+        <form method="post">
+            제목: <input type="text" name="title"><br><br>
+            내용:<br>
+            <textarea name="content" rows="5" cols="30"></textarea><br><br>
+
+            <label>오늘의 감정</label>
+            <div class="mood-select">
+                <label>
+                    <input type="radio" name="mood" value="😊" required>
+                    <span class="emoji">😊</span>
+                </label>
+                <label>
+                    <input type="radio" name="mood" value="😢" required>
+                    <span class="emoji">😢</span>
+                </label>
+                <label>
+                    <input type="radio" name="mood" value="😡" required>
+                    <span class="emoji">😡</span>
+                </label>
+            </div>
+
+            <button type="submit">저장</button>
+        </form>
+        <a href="{{ url_for('postlist') }}">글 목록 보기</a>
+
+
+        {% elif page == "homepage" %} <!--홈 페이지-->
+        <a href="{{ url_for('post') }}">
+            <button>글 작성하러 가기</button>
+        </a>
+
+
+        {% elif page == "postlist" %} <!--글 목록 페이지-->
+        <h1>글 목록</h1>
+        <form action="{{ url_for('search_by_date') }}" method="get" >
+            <label>날짜로 검색:</label>
+            <input type="date" name="date">
+            <button type="submit">검색</button>
+        </form>
+        <ul>
+            {% for p in posts %}
+            <li>
+                <a href="{{ url_for('detailpost', post_id=p['id']) }}">{{ p.id }}번: {{p.title}}</a>
+                <div>{{ p.date }}</div>
+                <a href="{{ url_for('editpost', post_id=p['id']) }}">
+                    <button>글 수정하기</button>
+                </a>
+                <form action="{{ url_for('delete_post', post_id=p['id']) }}" method="post" style="display:inline;">
+                    <button type="submit">글 삭제하기</button>
+                </form>
+                <div class="mood">{{ p.mood }}</div>
+            </li>
+            {% endfor %}
+        </ul>
+        <a href="{{ url_for('post') }}">글 작성하기</a>
+
+
+        {% elif page == "edit" %} <!--글 수정 페이지-->
+        <h1>글 수정하기</h1>
+        <form method="post">
+            제목: <input type="text" name="title" value="{{ post.title }}"><br>
+            내용: <br>
+            <textarea name="content" rows="5" cols="30">{{ post.content }}</textarea><br>
+            
+            <label>오늘의 감정</label>
+            <div class="mood-select">
+                <label>
+                    <input type="radio" name="mood" value="😊" required>
+                    <span class="emoji">😊</span>
+                </label>
+                <label>
+                    <input type="radio" name="mood" value="😢" required>
+                    <span class="emoji">😢</span>
+                </label>
+                <label>
+                    <input type="radio" name="mood" value="😡" required>
+                    <span class="emoji">😡</span>
+                </label>
+            </div>
+
+            <button type="submit">수정 완료</button>
+        </form>
+        <a href="{{ url_for('postlist') }}">목록으로 돌아가기</a>
+
+        <a href="{{ url_for('post') }}">
+            <button>글 작성하러 가기</button>
+        </a>
+
+
+        {% elif page == "detail" %} <!--글 제시히 보기 페이지-->
+        <h1>{{ post.title }}</h1>
+        <p>{{ post.date }}</p>
+        <p>{{ post.content }}</p>
+        <p>{{ post.mood }}</p>
+        <a href="{{ url_for('postlist') }}">목록으로 돌아가기</a>
+        {% endif %}
+    </body>
+</html>

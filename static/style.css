@@ -1,0 +1,16 @@
+.mood-select {
+    display: flex;
+    gap: 10px;
+    margin: 10px 0;
+}
+.mood-select input {
+    display: none;
+}
+.mood-select label {
+    cursor: pointer;
+    font-size: 2rem;
+    transition: transform 0.15s;
+}
+.mood-select input:checked + .emoji {
+    transform: scale(1.3);
+}
